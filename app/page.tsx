@@ -1,4 +1,4 @@
-const HomePage = ({ searchParams }: { searchParams: Promise<{ limit: string }> }) => {
+const HomePage = () => {
   return (
     // <Suspense fallback={<div>Loading...</div>}>
     <></>
