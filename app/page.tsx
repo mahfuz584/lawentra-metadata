@@ -1,9 +1,5 @@
 const HomePage = () => {
-  return (
-    // <Suspense fallback={<div>Loading...</div>}>
-    <></>
-    // </Suspense>
-  );
+  return <></>;
 };
 
 export default HomePage;

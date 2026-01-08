@@ -1,4 +1,4 @@
-import { secret_access_token, secret_app_id } from './env';
+import { secret_access_token } from './env';
 import { ApiResponseType, GlobalFetchTypes } from './types';
 
 export const globalFetch = async <T>({
@@ -7,9 +7,8 @@ export const globalFetch = async <T>({
 }: GlobalFetchTypes): Promise<ApiResponseType<T>> => {
   const BASE_URL = 'https://graph.facebook.com/v24.0';
   const ACCESS_TOKEN = secret_access_token;
-  const SECRET_APP_ID = secret_app_id;
 
-  if (!ACCESS_TOKEN || !SECRET_APP_ID) {
+  if (!ACCESS_TOKEN) {
     return {
       success: false,
       data: null,
@@ -17,7 +16,7 @@ export const globalFetch = async <T>({
     };
   }
 
-  const url = new URL(`${BASE_URL}/${SECRET_APP_ID}/${endPoint}`);
+  const url = new URL(`${BASE_URL}/${endPoint}`);
 
   if (queryParams) {
     Object.entries(queryParams).forEach(([key, value]) => {
@@ -29,10 +28,20 @@ export const globalFetch = async <T>({
 
   url.searchParams.set('access_token', ACCESS_TOKEN);
 
-  const res = await fetch(url.toString());
+  const finalUrl = url.toString();
+
+  const res = await fetch(finalUrl, {
+    next: {
+      revalidate: 60,
+      tags: ['facebook-data'],
+    },
+  });
+
+  console.log(finalUrl);
 
   if (!res.ok) {
     const text = await res.text();
+    console.log(res);
     return {
       success: false,
       data: null,
