@@ -1,7 +1,7 @@
 import { secret_access_token } from './env';
-import { ApiResponseType, GlobalFetchTypes } from './types';
+import { ApiResponseType, GlobalFetchTypes, MetaError } from './types';
 
-export const globalFetch = async <T>({
+export const globalFetch = async <T extends object>({
   endPoint,
   queryParams,
 }: GlobalFetchTypes): Promise<ApiResponseType<T>> => {
@@ -28,32 +28,24 @@ export const globalFetch = async <T>({
 
   url.searchParams.set('access_token', ACCESS_TOKEN);
 
-  const finalUrl = url.toString();
+  const res = await fetch(url.toString());
+  const json = (await res.json()) as T | MetaError;
 
-  const res = await fetch(finalUrl, {
-    next: {
-      revalidate: 60,
-      tags: ['facebook-data'],
-    },
-  });
-
-  console.log(finalUrl);
-
-  if (!res.ok) {
-    const text = await res.text();
-    console.log(res);
+  if ('error' in json) {
+    if (json.error.code === 190 && typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('facebook-auth-error', { detail: json.error }));
+    }
     return {
       success: false,
       data: null,
-      message: `Facebook API error ${res.status}: ${text}`,
+      message: json.error.message,
+      rawError: json.error,
     };
   }
 
-  const json = (await res.json()) as T;
-
   return {
     success: true,
-    message: 'Successfully Fetched Data',
     data: json,
+    message: 'Success',
   };
 };

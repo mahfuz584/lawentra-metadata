@@ -1,5 +1,5 @@
-import { secret_app_id } from '../../lib/env';
-import { globalFetch } from '../../lib/globalFetch';
+import { secret_app_id } from '@/app/lib/env';
+import { globalFetch } from '@/app/lib/globalFetch';
 import { CampaignsResponse } from './type';
 
 export const fetchCampaigns = () => {

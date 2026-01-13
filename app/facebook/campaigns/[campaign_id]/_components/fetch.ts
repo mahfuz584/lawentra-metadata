@@ -5,7 +5,8 @@ export const fetchCampaignInsight = async ({ campaign_id }: FetchParams) => {
   const fethedInsights = await globalFetch<CampaignInsightsResponse>({
     endPoint: `${campaign_id}/insights`,
     queryParams: {
-      fields: 'impressions,clicks,spend,ctr,cpc,reach,frequency',
+      fields: 'impressions,reach,spend,outbound_clicks,outbound_clicks_ctr,frequency',
+      breakdowns: 'publisher_platform',
       date_preset: 'maximum',
     },
   });
