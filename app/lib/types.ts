@@ -18,6 +18,7 @@ export type ApiResponseType<T> = {
 };
 
 export type GlobalFetchTypes = {
+  accessToken: string;
   endPoint: string;
   queryParams: QueryParams;
 };

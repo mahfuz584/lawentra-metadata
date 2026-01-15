@@ -5,6 +5,7 @@ const CampaignPage = () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <CampaignDataWrapper />
+      dwwdadawdw
     </Suspense>
   );
 };
